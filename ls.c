@@ -1,6 +1,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -21,6 +22,22 @@ int main(int argc, char **argv)
         printf("errno = %s\n", strerror(errno));
         return 1;
     }
-    S_ISDIR(mystat->st_mode);
-    printf("%-20s%ld\n", argv[1], mystat->st_size);
+    if (S_ISDIR(mystat->st_mode))
+    {
+        DIR *directory = opendir(path);
+        char *filename, *dir_copy;
+
+        struct dirent *dir_entry;
+        while ((dir_entry = readdir(directory)) != NULL)
+        {
+            filename = dir_entry->d_name;
+            filename = strcat(path, filename);
+            stat(filename, mystat);
+            printf("%-60s%ld\n", filename, mystat->st_size);
+        }
+    }
+    else
+    {
+        printf("%-20s%ld\n", argv[1], mystat->st_size);
+    }
 }
