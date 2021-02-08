@@ -8,6 +8,7 @@
 			"presentation": {
 				"echo": true,
 				"reveal": "silent",
+				"revealProblems": "onProblem",
 				"focus": false,
 				"panel": "shared",
 				"showReuseMessage": true,
@@ -44,7 +45,7 @@
 				"${fileDirname}/${fileBasenameNoExtension}.exe"
 			],
 			"options": {
-				"cwd": "/usr/bin"
+				"cwd": "${fileDirname}"
 			},
 			"problemMatcher": [
 				"$gcc"
@@ -65,7 +66,8 @@
 			"presentation": {
 				"echo": true,
 				"reveal": "always",
-				"focus": true,
+				"revealProblems": "onProblem",
+				"focus": false,
 				"panel": "shared",
 				"showReuseMessage": false,
 				"clear": false
@@ -74,11 +76,11 @@
 				"-c",
 				"'",
 				"${fileDirname}/${fileBasenameNoExtension}.exe",
-				"/home/bozhenkodm/projects/helloworld/file1",
+				"file1",
 				"'"
 			],
 			"options": {
-				"cwd": "/usr/bin"
+				"cwd": "${fileDirname}"
 			},
 			"problemMatcher": [],
 			"group": {
