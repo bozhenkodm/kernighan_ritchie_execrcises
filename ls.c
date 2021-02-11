@@ -9,6 +9,7 @@
 #include <errno.h>
 #include <string.h>
 #include <ctype.h>
+#include <time.h>
 
 #define dprint(expr) printf(#expr " = %g\n", expr)
 #define sprint(expr) printf(#expr " = %s\n", expr)
@@ -16,6 +17,19 @@
 
 int natural_comparison(const struct dirent **a, const struct dirent **b);
 void print_permission_string(unsigned long st_mode);
+
+struct ls_entry
+{
+    char file_type;
+    char *permissions;
+    nlink_t hardlinks_count;
+    char *user;
+    char *group;
+    off_t size;
+    struct timespec mod_time;
+    char *file_name;
+};
+void print_ls_entry(struct ls_entry lse);
 
 int natural_comparison(const struct dirent **a, const struct dirent **b)
 {
@@ -76,11 +90,31 @@ void print_permission_string(unsigned long st_mode)
     printf(" ");
 }
 
+void print_ls_entry(struct ls_entry lse)
+{
+    time_t time = lse.mod_time.tv_sec;
+    struct tm *broken_down_time = gmtime(&time);
+    char human_readable_time[20]; // TODO figure out how to initialize variable
+    strftime(human_readable_time, 20, "%F %R", broken_down_time);
+    printf(
+        "%c%s %lu %s %s %ld %s %s\n",
+        lse.file_type,
+        lse.permissions,
+        lse.hardlinks_count,
+        lse.user,
+        lse.group,
+        lse.size,
+        human_readable_time,
+        lse.file_name);
+}
+
 int main(int argc, char **argv)
 {
     (void)argc;
     struct stat *os_entry_stat = malloc(sizeof *os_entry_stat);
     const char *path = argv[1];
+
+    // drwxrwxr-x 8 bozhenkodm bozhenkodm  4096 фев 10 20:44 .git/
 
     stat(path, os_entry_stat);
     if (errno)
